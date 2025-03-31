@@ -1,0 +1,51 @@
+{
+  "compilerOptions": {
+    "jsx": "preserve",
+    "target": "ES2022",
+    "module": "CommonJS",
+    "moduleResolution": "Node",
+    "moduleDetection": "force",
+    "lib": [
+      "ES2022",
+      "DOM"
+    ],
+    "types": [
+      "node"
+    ],
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
+    "outDir": "./dist", // Pasta onde os arquivos JS compilados serão salvos
+    "rootDir": "./", // Raiz do projeto para organização
+    "baseUrl": ".",
+    "paths": {
+      "@/components/*": [
+        "components/*"
+      ]
+    },
+    "allowJs": true,
+    "noEmit": true,
+    "incremental": true,
+    "isolatedModules": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ]
+  },
+  "include": [
+    "app", // Inclui a pasta de código fonte
+    "bin", // Inclui a pasta de binários ou scripts executáveis
+    "lib", // Inclui a lógica do backend
+    "src" // Inclui o diretório do Next.js para as rotas
+    ,
+    ".next/types/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules", // Ignora a pasta de dependências
+    "dist" // Ignora a pasta de arquivos compilados
+  ]
+}
