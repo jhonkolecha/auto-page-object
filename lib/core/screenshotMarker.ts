@@ -1,54 +1,63 @@
 import { Page } from 'playwright';
 import { PageElement } from './pageScanner';
 
+export async function captureScreenshotWithHighlights(page: Page, elements: PageElement[]) {
+  await highlightElements(page, elements);
+
+  const screenshot = await page.screenshot({ fullPage: true });
+
+  return screenshot;
+}
+
 export async function highlightElements(page: Page, elements: PageElement[]) {
-  // 🔍 Filtra elementos com seletores válidos para querySelector (exclui text=)
   const queryableElements = elements
-    .map((el, idx) => ({ selector: el.selector, idx }))
-    .filter(item => item.selector && !item.selector.startsWith('text='));
+    .map((el, idx) => ({ selector: el.selector, idx }));
 
-  // 🔧 Tenta localizar esses elementos com Playwright
-  const handles = await Promise.all(
-    queryableElements.map(item => page.$(item.selector))
-  );
+  for (const { selector, idx } of queryableElements) {
+    try {
+      let element;
 
-  // ✅ Filtra elementos válidos (não nulos)
-  const valid = handles
-    .map((el, i) => ({ el, idx: queryableElements[i].idx }))
-    .filter(item => item.el !== null);
+      if (selector.startsWith('text=')) {
+        element = await page.locator(selector);
+      } else {
+        element = await page.locator(selector);
+      }
 
-  // 🖍️ Insere destaque visual no DOM para cada elemento identificado
-  await page.evaluate((infos) => {
-    infos.forEach(({ idx, selector }) => {
-      const el = document.querySelector(selector);
-      if (!el) return;
+      const count = await element.count();
+      if (count > 1) {
+        console.log(`Múltiplos elementos encontrados para o seletor: ${selector}. Selecionando o primeiro.`);
+        element = element.first();
+      }
 
-      const r = el.getBoundingClientRect();
-      const marker = document.createElement('div');
-      marker.textContent = (idx + 1).toString();
+      const boundingBox = await element.boundingBox();
+      if (!boundingBox) continue;
 
-      Object.assign(marker.style, {
-        position: 'absolute',
-        top: `${r.top + scrollY}px`,
-        left: `${r.left + scrollX}px`,
-        width: `${r.width}px`,
-        height: `${r.height}px`,
-        border: '2px solid red',
-        background: 'rgba(255, 0, 0, 0.1)',
-        color: 'red',
-        fontWeight: 'bold',
-        fontSize: '12px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        zIndex: '99999',
-        pointerEvents: 'none'
-      });
+      await page.evaluate(({ idx, boundingBox }) => {
+        const marker = document.createElement('div');
+        marker.textContent = (idx + 1).toString();
 
-      document.body.appendChild(marker);
-    });
-  }, valid.map(item => ({
-    idx: item.idx,
-    selector: elements[item.idx].selector
-  })));
+        Object.assign(marker.style, {
+          position: 'absolute',
+          top: `${boundingBox.y + window.scrollY}px`,
+          left: `${boundingBox.x + window.scrollX}px`,
+          width: `${boundingBox.width}px`,
+          height: `${boundingBox.height}px`,
+          border: '2px solid red',
+          background: 'rgba(255, 0, 0, 0.1)',
+          color: 'red',
+          fontWeight: 'bold',
+          fontSize: '12px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: '99999',
+          pointerEvents: 'none'
+        });
+
+        document.body.appendChild(marker);
+      }, { idx, boundingBox });
+    } catch (error) {
+      console.log(`Erro ao localizar elemento: ${selector}`, error);
+    }
+  }
 }

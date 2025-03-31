@@ -1,4 +1,8 @@
-import { PageElement } from './pageScanner';
+export interface PageElement {
+  name: string;
+  type: string;
+  value: string;
+}
 
 export function generateHTMLReport(pageName: string, elements: PageElement[]): string {
   const rows = elements.map((el, i) => `

@@ -57,7 +57,7 @@ export default function PageObjectGenerator() {
               <Input
                 id="url"
                 value={url}
-                onChange={(e) => setUrl(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setUrl(e.target.value)}
                 placeholder="https://www.exemplo.com"
                 className="mt-2"
               />
@@ -68,7 +68,7 @@ export default function PageObjectGenerator() {
               <Input
                 id="pageName"
                 value={pageName}
-                onChange={(e) => setPageName(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPageName(e.target.value)}
                 placeholder="Ex: LoginPage"
                 className="mt-2"
               />

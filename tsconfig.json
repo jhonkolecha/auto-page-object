@@ -18,8 +18,8 @@
     "skipLibCheck": true,
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
-    "outDir": "./dist", // Pasta onde os arquivos JS compilados serão salvos
-    "rootDir": "./", // Raiz do projeto para organização
+    "outDir": "./dist",
+    "rootDir": "./",
     "baseUrl": ".",
     "paths": {
       "@/components/*": [
@@ -37,15 +37,15 @@
     ]
   },
   "include": [
-    "app", // Inclui a pasta de código fonte
-    "bin", // Inclui a pasta de binários ou scripts executáveis
-    "lib", // Inclui a lógica do backend
-    "src" // Inclui o diretório do Next.js para as rotas
+    "app",
+    "bin",
+    "lib",
+    "src"
     ,
     ".next/types/**/*.ts"
   ],
   "exclude": [
-    "node_modules", // Ignora a pasta de dependências
-    "dist" // Ignora a pasta de arquivos compilados
+    "node_modules",
+    "dist"
   ]
 }
